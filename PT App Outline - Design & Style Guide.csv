@@ -1,0 +1,8 @@
+Element,Specification,Notes
+Theme,"Light Mode, Dark Mode, or User-Selectable.","User-Selectable, But Light Mode is the default."
+Primary Accent Color,Main color for buttons and links.,#9784FA
+Secondary Accent Color,Color for success/status indicators.,N/a
+Font Family,The primary font to be used.,N/a
+Icon Library,Standard library to use for all icons.,N/a
+UI Framework,The underlying CSS/component framework.,ShadCN 
+Aesthetics,"General look and feel (e.g., rounded, flat, skeuomorphic).","Friendly, approchable, rounded, fun, uncomplicated "

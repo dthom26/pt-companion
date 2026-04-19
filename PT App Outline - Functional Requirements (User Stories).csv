@@ -1,0 +1,12 @@
+ID,User Role,Goal,Reason (So That...),Status (Required/Optional),Progress
+FR-001,New Client (User),Sign up with my email and password( with signup code given by PT),,Required,To Do
+FR-002,Existing Client,able to see exerices and progrm asigned to them by PT ,,Required,To Do
+FR-003,Existing Client,"able to recored data about the exerices they completed (reps and sets , and notes)",,Required,To Do
+FR-004,Existing Client,able to messge PT,,Required,To Do
+FR-005,Existing Client,analitycs dashbored for client,,Required,To Do
+FR-006,Admin ( the PT),Sign up with my email and password,,Required,To Do
+FR-007,Admin ( the PT),create new user to under thier clinets and generate signup code,,Required,To Do
+FR-008,Admin ( the PT),assigning exerces to clinet accuont ,,Required,To Do
+FR-009,Admin ( the PT),able to see analyics on each clinet (e.g execerres completed that week and progess being made),,Required,To Do
+FR-010,Admin ( the PT),able to remove or eidt clinets info,,Required,To Do
+FR-011,Admin ( the PT),able to message client,,Required,To Do

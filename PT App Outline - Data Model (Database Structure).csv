@@ -1,0 +1,109 @@
+Model Name,Field Name,Type,Description,Sample Data,Validation/Constraints
+Client,ID,string,Unique document ID,user_j9x1k4a7,"Required, Unique, Auto-generated"
+,createdAt,timestamp,Time the document was created,2025-10-15T10:00:00Z,"Required, Auto-populated"
+,updatedAt,timestamp,Time the document was last updated,2025-11-22T17:10:00Z,Auto-populated on update
+,email,string,User's email address,jane.doe@example.com,"Required, Unique, Must be valid email format"
+,password,string,User's hashed password,$2b$10$AbCDeF.GhiJkL/mNoPqRSTuVwXyZaB/cDe,"Required, Stored as hash (e.g., bcrypt), Min 8 characters"
+,firstName,string,User's first name,Jane,"Required, Max 50 characters"
+,lastName,string,User's last name,Doe,"Required, Max 50 characters"
+,phone,string,User's phone number,+1-555-123-4567,"Optional, Must be valid phone number format"
+,plan,string,Current subscription plan,Pro,"Required, Must be one of: [Free, Starter, Pro, Enterprise]"
+,trainer.id,string,Reference ID of Trainer of this client,1287tr3287t32,"Required, Unique, Auto-generated"
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+Model Name,Field Name,Type,Description,Sample Data,Validation/Constraints
+Trainer (PT),ID,string,Unique document ID,user_j9x1k4a7,"Required, Unique, Auto-generated"
+,createdAt,timestamp,Time the document was created,2025-10-15T10:00:00Z,"Required, Auto-populated"
+,updatedAt,timestamp,Time the document was last updated,2025-11-22T17:10:00Z,Auto-populated on update
+,email,string,User's email address,jane.doe@example.com,"Required, Unique, Must be valid email format"
+,password,string,User's hashed password,$2b$10$AbCDeF.GhiJkL/mNoPqRSTuVwXyZaB/cDe,"Required, Stored as hash (e.g., bcrypt), Min 8 characters"
+,firstName,string,User's first name,Jane,"Required, Max 50 characters"
+,lastName,string,User's last name,Doe,"Required, Max 50 characters"
+,company,string,User's company name,Acme Retail Solutions,"Optional, Max 100 characters"
+,phone,string,User's phone number,+1-555-123-4567,"Optional, Must be valid phone number format"
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,plan,string,Current subscription plan,Pro,"Required, Must be one of: [Free, Starter, Pro, Enterprise]"
+,subscriptionStatus,string,Overall subscription status,active,"Required, Must be one of: [trialing, active, past_due, canceled]"
+,stripe,object,Stripe billing identifiers,{...},Optional (If paid plan is active/was active)
+,stripe.customerID,string,Stripe Customer ID,cus_P4ssw0rD5tRiPe,Required (if stripe exists)
+,stripe.subscriptionId,string,Stripe Subscription ID,sub_H4rdC0d3dId,Required (if stripe exists)
+,subscription,object,Detailed subscription information,{...},Optional (If paid plan is active/was active)
+,subscription.plan,string,Subscription plan name,Pro,Required (if subscription exists)
+,subscription.status,string,Detailed subscription status,active,Required (if subscription exists)
+,subscription.periodStart,timestamp,Start of current billing period,2025-11-01T00:00:00Z,Required (if subscription exists)
+,subscription.periodEnd,timestamp,End of current billing period,2025-12-01T00:00:00Z,"Required (if subscription exists), Must be > periodStart"
+,subscription.trialEnd,timestamp,End of the trial period,2025-10-31T23:59:59Z,Optional (Only if subscriptionStatus is trialing)
+,subscription.trialEnd,timestamp,End of the trial period,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+Model Name,Field Name,Type,Description,Sample Data,Validation/Constraints
+Program,ID,string,Unique document ID,user_j9x1k4a7,"Required, Unique, Auto-generated"
+,createdAt,timestamp,Time the document was created,2025-10-15T10:00:00Z,"Required, Auto-populated"
+,updatedAt,timestamp,Time the document was last updated,2025-11-22T17:10:00Z,Auto-populated on update
+,trainer.id,string,Reference ID of Trainer who created this,1287tr3287t32,"Required, Unique, Auto-generated"
+,assignedTo,array,"Array of client id's, program is assigned to","[123,3453,56756,345345]","Required, Auto-populated with empty array"
+,name,string,name of prgram,Chest recovery,Required 
+,duration.value,integer,duration of program,6,Optional 
+,duration.interval,string,duration interval of program,weeks ,Optional 
+,startDate,,,,Optional 
+,endDate,,,,Optional 
+,blocks,Array of objects,block of workouts,,"Required, Auto-populated as array"
+,block.weeks,Integer,Number of weeks for block,2,
+,block.repeat,Boolean,does the block repeat,TRUE,
+,block.infinite,Boolean,does it repeat indefinetly,FALSE,
+,block.repeatTimes,Integer,how many times does it repeat,6,
+,block.workouts,Array of IDs or Null,"Workouts in block, or null for rest day","[123,234,null,34534,null]","Required, Auto-populated"
+,block.name,string,name of block,Chest strengthening ,Required 
+,recordedSessions,Array of session Ids,Array of session Ids,"[123,345,4576]",
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+Model Name,Field Name,Type,Description,Sample Data,Validation/Constraints
+Workout ,ID,string,Unique document ID for the workout log entry.,workout_log_456,"Required, Unique, Auto-generated"
+,userId,string,ID of the user who performed this workout.,user_j9x1k4a7,"Required, Foreign key to User Model"
+,date,timestamp,The date and time the workout was performed.,2025-11-28 17:00:00,Required
+,durationMinutes,number,The total duration of the workout in minutes.,60,"Required, Must be $\ge 0$"
+,notes,string,Any general notes about the workout session.,"Felt strong today, good leg day.",Optional
+,workoutLogId,string,ID of the parent workout log entry.,workout_log_456,"Required, Foreign key to WorkoutLog ID"
+,,,,,
+,sets,number,The number of sets performed for this exercise.,4,"Required, Must be $\ge 1$"
+,reps,string,"The repetition scheme for the sets (e.g., 10, 8, 8, 6 or 3x10).","10, 8, 8, 6",Required
+,weight,number,The weight used for the exercise (in a standard unit like lbs or kg).,135,"Required, Must be $\ge 0$"
+,rpe,number,Rate of Perceived Exertion (1-10 scale).,8,"Optional, Must be in range [1, 10]"
+,specificNotes,string,Specific notes for this exercise entry.,Increased the weight on the last two sets.,Optional
+,trainer.id,string,Reference ID of Trainer who created this,1287tr3287t32,"Required, Unique, Auto-generated"
+,name,string,name of prgram,Squats,Required 
+,exercises,Array of exercises ,,,
+,exercise.name,,,,
+,exercise.notes,,,,
+,exercise.sets,Array of sets,,,
+,exercise.reps,Integer,Number of reps,,
+,exercise.weight,,Weight for set,,
+,,,,,
+Model Name,Field Name,Type,Description,Sample Data,Validation/Constraints
+Session ,ID,string,Unique document ID for the workout log entry.,workout_log_456,"Required, Unique, Auto-generated"
+,clientId,,,,
+,workoutId,,,,

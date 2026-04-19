@@ -1,0 +1,59 @@
+Authentication,,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+User Registration,POST /api/auth/register,"email, password, name, role (professional/client)","User object, JWT token",INSERT into Users table,Hash password before storing
+User Login,POST /api/auth/login,"email, password","User object (with role), JWT token",SELECT from Users WHERE email,"Verify password hash, return role for routing"
+Logout,POST /api/auth/logout,userId (from token),Success message,N/A,Invalidate token on client side
+Get Current User,GET /api/auth/me,JWT token (header),User object,SELECT from Users WHERE id,Verify authentication status
+Professional (PT) - Client Management,,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Get All My Clients,GET /api/professional/clients,professionalId (from token),Array of client objects with basic stats,SELECT from Users JOIN ClientAssignments WHERE professionalId,Dashboard overview - show client list
+Get Single Client Overview,GET /api/professional/clients/:clientId,"clientId, professionalId (from token)","Client object with progress, stats, current program","SELECT from Users, Programs, WorkoutSessions, Stats WHERE clientId",Detailed client dashboard
+Assign Client to Professional,POST /api/professional/clients,"professionalId, clientEmail or clientId",Assignment object,INSERT into ClientAssignments table,Link client to PT
+Remove Client,DELETE /api/professional/clients/:clientId,"clientId, professionalId",Success message,DELETE from ClientAssignments WHERE clientId AND professionalId,Unassign client
+Programs (PT Creates/Manages),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Create Program,POST /api/programs,"name, description, durationWeeks, clientId, professionalId, exercises (array)",Program object,"INSERT into Programs table, INSERT into ProgramExercises",PT prescribes program to client
+Get Program by ID,GET /api/programs/:programId,programId,Program object with all exercises,SELECT from Programs JOIN ProgramExercises WHERE programId,Full program details
+Update Program,PUT /api/programs/:programId,"programId, name, description, durationWeeks, exercises",Updated program object,"UPDATE Programs, UPDATE/INSERT ProgramExercises",Modify existing program
+Delete Program,DELETE /api/programs/:programId,"programId, professionalId",Success message,DELETE from Programs WHERE id (cascade exercises),Remove program
+Get Client's Active Program,GET /api/programs/client/:clientId,clientId,Active program object with exercises,SELECT from Programs WHERE clientId AND status='active',Client's current prescribed program
+Get All Programs by PT,GET /api/programs/professional/:professionalId,professionalId,Array of programs,SELECT from Programs WHERE professionalId,PT's program library
+Exercises (Building Blocks of Programs),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Create Exercise,POST /api/exercises,"name, description, sets, reps, imageUrl, videoUrl, instructions, bodyPart",Exercise object,INSERT into Exercises table,Add to exercise library
+Get Exercise Library,GET /api/exercises,"bodyPart (optional), searchTerm (optional)",Array of exercise objects,SELECT from Exercises WHERE filters,Browse available exercises
+Get Exercise by ID,GET /api/exercises/:exerciseId,exerciseId,Exercise object with full details,SELECT from Exercises WHERE id,View single exercise
+Update Exercise,PUT /api/exercises/:exerciseId,"exerciseId, name, description, sets, reps, images, videos",Updated exercise object,UPDATE Exercises WHERE id,Modify exercise details
+Delete Exercise,DELETE /api/exercises/:exerciseId,exerciseId,Success message,DELETE from Exercises WHERE id,Remove from library
+Workout Sessions (Client Completes Exercises),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Get Today's Session,GET /api/sessions/today/:clientId,"clientId, date (optional defaults to today)",Session object with exercises to complete,"SELECT from Programs, ProgramExercises WHERE clientId AND sessionDate",Client's workout for the day
+Start Workout Session,POST /api/sessions,"clientId, programId, date",Session object,INSERT into WorkoutSessions table,Create new session record
+Complete Exercise in Session,PUT /api/sessions/:sessionId/exercises/:exerciseId,"sessionId, exerciseId, setsCompleted, repsCompleted, notes, completed (boolean)",Updated exercise log,INSERT/UPDATE ExerciseLogs table,Track individual exercise completion
+Complete Entire Session,PUT /api/sessions/:sessionId/complete,"sessionId, completedAt, totalDuration, notes",Updated session object,"UPDATE WorkoutSessions SET completed=true, completedAt",Mark full workout as done
+Get Session History,GET /api/sessions/client/:clientId,"clientId, startDate, endDate, limit",Array of completed sessions,SELECT from WorkoutSessions WHERE clientId ORDER BY date DESC,View past workouts
+Client Progress & Stats,,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Get Client Stats,GET /api/stats/:clientId,"clientId, period (week/month/all)","Stats object (workouts completed, streak, progress %)",SELECT with COUNT and aggregations from WorkoutSessions WHERE clientId,Dashboard stats widget
+Get Workout Completion Rate,GET /api/stats/:clientId/completion,"clientId, startDate, endDate",Completion percentage and counts,SELECT COUNT from WorkoutSessions WHERE completed,Weekly/monthly completion
+Get Current Streak,GET /api/stats/:clientId/streak,clientId,Streak count (consecutive days/weeks),SELECT from WorkoutSessions ORDER BY date,Gamification element
+Get Progress Over Time,GET /api/stats/:clientId/progress,"clientId, metric (completion/consistency)",Array of data points for chart,"SELECT date, COUNT from WorkoutSessions GROUP BY date",For charts.js visualization
+Get Weeks in Program,GET /api/stats/:clientId/program-progress,"clientId, programId","Current week number, total weeks, percentage","SELECT from Programs, WorkoutSessions",Track program timeline
+Notes (Client & PT Communication),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Add Note to Exercise,POST /api/notes,"clientId, exerciseId, sessionId, content, author (client/professional)",Note object,INSERT into Notes table,Client can add workout notes
+Get Notes for Session,GET /api/notes/session/:sessionId,sessionId,Array of notes,SELECT from Notes WHERE sessionId,View all session notes
+Get Notes for Client,GET /api/notes/client/:clientId,"clientId, limit",Array of recent notes,SELECT from Notes WHERE clientId ORDER BY date DESC,PT reviews client notes
+Update Note,PUT /api/notes/:noteId,"noteId, content",Updated note object,UPDATE Notes WHERE id,Edit existing note
+Delete Note,DELETE /api/notes/:noteId,noteId,Success message,DELETE from Notes WHERE id,Remove note
+Messaging (PT <-> Client),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Send Message,POST /api/messages,"senderId, receiverId, content, timestamp",Message object,INSERT into Messages table,Direct messaging
+Get Conversation,GET /api/messages/conversation,"userId1, userId2, limit, offset",Array of messages,SELECT from Messages WHERE (senderId=user1 AND receiverId=user2) OR (senderId=user2 AND receiverId=user1) ORDER BY timestamp,Paginated chat history
+Get Unread Messages,GET /api/messages/unread/:userId,userId,Array of unread messages,SELECT from Messages WHERE receiverId=userId AND read=false,Notification count
+Mark Message as Read,PUT /api/messages/:messageId/read,messageId,Updated message object,UPDATE Messages SET read=true WHERE id,Mark as read
+Get All Conversations,GET /api/messages/conversations/:userId,userId,"Array of conversation previews (last message, unread count)",SELECT DISTINCT with JOIN to get last message per conversation,Inbox view
+Dashboard Data (Aggregated Endpoints),,,,,
+Action Name,Method/Function,Input Parameters,Expected Output,Database Interaction,Notes
+Get Professional Dashboard,GET /api/dashboard/professional/:professionalId,professionalId,"Dashboard data (client count, active programs, recent activity)",Multiple SELECT queries aggregated,PT home page data
+Get Client Dashboard,GET /api/dashboard/client/:clientId,clientId,"Dashboard data (active program, today's session, stats, streak)",Multiple SELECT queries aggregated,Client home page data

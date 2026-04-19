@@ -1,0 +1,28 @@
+ID,Page/View Name,Key Elements and Content,Interactions / Expected User Actions,Notes
+PV-01,Client Authentication Page,"Login Form, Sign Up Form, Forgot Password Link, Welcome Text.","Submit forms, Navigate between Login/Sign Up.",Mandatory before user data access.
+PV-02,PT (admin) Authentication Page,"Login Form, Sign Up Form, Forgot Password Link, Welcome Text.","Submit forms, Navigate between Login/Sign Up.",Mandatory before user data access.
+PV-03,Client Dashboard Page (Home),"goes to home ( dashboard) of user account
+client - program ( this will be what the pt has prescribed them), past workouts overview, other overview stats
+
+",clinet - able to select the program and taken to progam page. ,
+PV-04,PT Dashboard Page (Home),"go to dashboard that will show overview of clients
+", able to chose from list of clinets and take to that clents profile (dashobord) ,
+PV-05,Client Program Program (page for client) ,"client - program ( this will be what the pt has prescribed them, the workouts and longterm plan",,
+PV-06,Client - session,the exercises to do for that session) and able to inuput data like the sets and reps they did plus notes if they want to add them. ,"Will show list of exercises 
+Each exercise will have prescribed sets and reps 
+Description about the exercise and how to perform it, have images showing start and finish position 
+A video demonstration if needed
+Button to click after completing the exercise 
+A section for notes for the client to use if needed
+",
+PV-07,Client Settings Page,"Client Profile Information (Name, Email), Theme Selector (Light/Dark), any other client settings",Able to update personal information and view billing and current subscription ,Must allow user theme preference storage.
+PV-08,PT Page for client program ,"
+This page can be an overview of the client. Showing their progress and stats. able to create a new program for client of edit a current program. 
+","
+This page can be an overview of the client. Showing their progress and stats. able to create a new program for clinet of edit a currtent program. 
+",
+PV-09,PT page for viewing and editing individual workout for client,updating programs and workouts for client ,,
+PV-10,PT Page for creating client workout ,creating programs and workouts for clients,,
+PV-11,PT Settings Page,"PT (Admin) information, name, business, ect ",able to update PT info and settings ,
+PV-12,Stripe Purchase Page,Subscription purchase form,"Purchase subscription to app, after 7 day trial ","Stripe handles this page, we just need to link to it. Store subscription status"
+PV-13,Policy pages,Privacy policy and terms of use. Contact,Read about policy and terms of use. Contact for info,
